@@ -1,8 +1,5 @@
+---
 version: 0.2
-
-env:
-  parameter-store:         
-    JWT_SECRET: JWT_SECRET
 
 
 phases:
@@ -10,8 +7,7 @@ phases:
     runtime-versions:
       python: 3.7
     commands:
-      - echo 'about to call dockerd'
-      - echo 'about to call dockerd'
+    - echo 'about to call dockerd'
       - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2&
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
       - curl -sS -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
@@ -51,3 +47,6 @@ phases:
       - printf '[{"name":"simple_jwt_api","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
 artifacts:
   files: build.json
+env:
+  parameter-store:         
+    JWT_SECRET: JWT_SECRET
